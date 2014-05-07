@@ -7,7 +7,7 @@ if [ ! -f $JSON_MONITOR_MEMORIA_EM_USO ]; then
 	HORA_MINUTO_LEITURA=`date +%H:%M`;
 	MEMORIA_EM_USO_STRING=`ohai memory/free | grep [[:digit:]]`;
 	MEMORIA_EM_USO_INTEIRO=`echo $MEMORIA_EM_USO_STRING | sed 's/["a-zA-Z]//g'`;
-	MEMORIA_EM_USO_INTEIRO_MB=`$(($MEMORIA_EM_USO_INTEIRO / 1024))`;
+	MEMORIA_EM_USO_INTEIRO_MB=$(($MEMORIA_EM_USO_INTEIRO / 1024));
 
 	echo "{" 																																		>> $JSON_MONITOR_MEMORIA_EM_USO;
 	echo "    \"cols\": [" 																															>> $JSON_MONITOR_MEMORIA_EM_USO;
