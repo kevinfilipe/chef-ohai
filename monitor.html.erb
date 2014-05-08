@@ -14,7 +14,7 @@
 		    	dataType: 'json',
 		    	timeout: 10000,
 		        type: 'POST',
-		        url: 'monitor-memoria_em_uso.json'
+		        url: 'monitor-memoria.json'
 		    })
 		    .done(function(data) {
 		    	desenharGrafico(data);
@@ -27,17 +27,18 @@
 			var dataTable = new google.visualization.DataTable(data);
 
 			var options = {
+			  	legend: {
+			  		position: 'bottom'
+			  	},
 			  	hAxis: {
-			  		title: 'Tempo (Minutos)',  
 			  		titleTextStyle: {
 			  			color: '#333'
 			  		}
 			 	},
 			 	vAxis: {
-			 		format: '# MB',
+			 		format: '# MiB',
 			 		minValue: 0,
 			 		maxValue: <%= node["memory"]["total"].to_i / 1024 %>,
-			 		title: 'Quantidade de Memória', 
 			 		titleTextStyle: {
 			 			color: '#333'
 			 		}

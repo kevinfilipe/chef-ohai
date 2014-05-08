@@ -1,0 +1,10 @@
+{
+    "cols": [
+            {"id": "tempo", "label": "Tempo", "type": "string"},
+            {"id": "memoriaLivre", "label": "Memória RAM Livre", "type": "number"},
+            {"id": "memoriaUso", "label": "Memória RAM em Uso", "type": "number"}
+    ],
+    "rows": [
+            {"c":[{"v": "14:00"}, {"v": 250, "f": "250 MiB"}, {"v": 700, "f": "700 MiB"}]}
+    ]
+}
