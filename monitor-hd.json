@@ -1,0 +1,10 @@
+{
+    "cols": [
+            {"id": "nome", "type": "string"},
+            {"id": "valor", "type": "number"}
+    ],
+    "rows": [
+            {"c":[{"v": "HD Livre"}, {"v": 120, "f": "120 GiB"}]},
+            {"c":[{"v": "HD em Uso"}, {"v": 250, "f": "250 GiB"}]}
+    ]
+}

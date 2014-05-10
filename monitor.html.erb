@@ -11,6 +11,7 @@
 		function carregarInformacoes() {
 			carregarDadosMemoria();
 			carregarDadosSwap();
+			carregarDadosHD();
 		};
 
 		function carregarDadosMemoria() {
@@ -30,7 +31,7 @@
 
 		function carregarDadosSwap() {
 		    $.ajax({
-		    	complete: setTimeout(carregarDadosSwap, 25000),
+		    	complete: setTimeout(carregarDadosSwap, 20000),
 		    	dataType: 'json',
 		    	timeout: 10000,
 		        type: 'POST',
@@ -38,6 +39,21 @@
 		    })
 		    .done(function(data) {
 		    	desenharGraficoSwap(data);
+		    })
+		    .fail(function(data) {
+		    });	
+		};
+
+		function carregarDadosHD() {
+		    $.ajax({
+		    	complete: setTimeout(carregarDadosHD, 20000),
+		    	dataType: 'json',
+		    	timeout: 10000,
+		        type: 'POST',
+		        url: 'monitor-hd.json'
+		    })
+		    .done(function(data) {
+		    	desenharGraficoHD(data);
 		    })
 		    .fail(function(data) {
 		    });	
@@ -94,9 +110,23 @@
 			var chart = new google.visualization.AreaChart(document.getElementById('monitor-swap'));
 			chart.draw(dataTable, options);
 		};
+
+		function desenharGraficoHD(data) {
+			var dataTable = new google.visualization.DataTable(data);
+
+			var options = {
+			  	is3D: true,
+			  	legend: {
+			  		position: 'bottom'
+			  	}
+			};
+
+			var chart = new google.visualization.PieChart(document.getElementById('monitor-hd'));
+			chart.draw(dataTable, options);
+		};
 	</script>
 
-	<title> <%= node["node_name"] %> - Monitor de Recursos</title> 
+	<title><%= node["node_name"] %> - Monitor de Recursos</title> 
 </head>
 
 <body>
@@ -154,6 +184,7 @@
 				<label style="line-height: 30px; font-family: sans-serif; font-size: 20px; font-weight: bold;">Disco Rígido</label>
 			</div>
 			<div style="height: 470px; width: 100%;">
+				<div id="monitor-hd" style="width: 100%; height: 98%;"></div>
 			</div>
 		</div>
 		<div style="clear: both;"></div>
