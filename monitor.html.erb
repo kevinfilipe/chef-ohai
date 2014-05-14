@@ -130,36 +130,94 @@
 </head>
 
 <body>
-	<div style="border: 2px solid lightgrey; height: 110px; min-width: 960px; width: 100%;">
+	<div style="border: 2px solid lightgrey; height: auto; min-width: 960px; width: 100%;">
 		<div style="background-color: lightgrey; border-bottom: 2px solid lightgrey; height: 30px; text-align: center; width: 100%;">
 			<label style="line-height: 30px; font-family: sans-serif; font-size: 20px; font-weight: bold;">Informações Técnicas</label>
 		</div>
-		<div style="height: 80px; font-family: sans-serif; font-size: 18px; width: 100%;">
-			<div style="float: left; height: 100%; width: 50%;">
+		<div style="font-family: sans-serif; font-size: 18px; width: 100%;">
+			<div style="float: left; width: 50%;">
 				<div style="width: 98%; margin: 2px auto;">
 					<label style="font-weight: bold;">Nome do Nó: </label>
 					<label><%= node["node_name"] %></label>
 				</div>
 				<div style="width: 98%; margin: 2px auto;">
-					<label style="font-weight: bold;">Platforma: </label>
-					<label><%= node["platform"] %></label>
-				</div>
-				<div style="width: 98%; margin: 2px auto;">
 					<label style="font-weight: bold;">FQDN: </label>
 					<label><%= node["fqdn"] %></label>
 				</div>
-			</div>
-			<div style="float: right; height: 100%; width: 50%;">
 				<div style="width: 98%; margin: 2px auto;">
-					<label style="font-weight: bold;">MAC: </label>
+					<label style="font-weight: bold;">Plataforma</label>
+				</div>
+				<div style="width: 96%; margin: 2px auto 0px 30px;">
+					<label style="font-weight: bold;">Nome: </label>
+					<label><%= node["platform"] %></label>
+				</div>
+				<div style="width: 96%; margin: 2px auto 0px 30px;">
+					<label style="font-weight: bold;">Versão: </label>
+					<label><%= node["platform_version"] %></label>
+				</div>
+				<div style="width: 96%; margin: 2px auto 0px 30px;">
+					<label style="font-weight: bold;">Família: </label>
+					<label><%= node["platform_family"] %></label>
+				</div>
+				<div style="width: 98%; margin: 2px auto;">
+					<label style="font-weight: bold;">Kernel</label>
+				</div>
+				<div style="width: 96%; margin: 2px auto 0px 30px;">
+					<label style="font-weight: bold;">Nome: </label>
+					<label><%= node["kernel"]["name"] %></label>
+				</div>
+				<div style="width: 96%; margin: 2px auto 0px 30px;">
+					<label style="font-weight: bold;">Versão: </label>
+					<label><%= node["kernel"]["release"] %></label>
+				</div>
+				<div style="width: 96%; margin: 2px auto 0px 30px;">
+					<label style="font-weight: bold;">Ambiente: </label>
+					<label><%= node["kernel"]["machine"] %></label>
+				</div>
+			</div>
+			<div style="float: right; width: 50%;">
+				<div style="width: 98%; margin: 2px auto;">
+					<label style="font-weight: bold;">Endereço MAC: </label>
 					<label><%= node["macaddress"] %></label>
 				</div>
 				<div style="width: 98%; margin: 2px auto;">
-					<label style="font-weight: bold;">IP: </label>
+					<label style="font-weight: bold;">Endereço IPV4: </label>
 					<label><%= node["ipaddress"] %></label>
 				</div>
+				<div style="width: 98%; margin: 2px auto;">
+					<label style="font-weight: bold;">Endereço IPV6: </label>
+					<label><%= node["ip6address"] %></label>
+				</div>		
+					<div style="width: 98%; margin: 2px auto;">
+					<label style="font-weight: bold;">Quantidade de CPU's: </label>
+					<label><%= node["cpu"]["total"].to_i %></label>
+				</div>	
+				<div style="width: 98%; margin: 2px auto;">
+					<label style="font-weight: bold;">Total de Memória RAM: </label>
+					<label><%= node["memory"]["total"].to_i / 1024 %> MiB</label>
+				</div>
+				<div style="width: 98%; margin: 2px auto;">
+					<label style="font-weight: bold;">Total de Memória SWAP: </label>
+					<label><%= node["memory"]["swap"]["total"].to_i / 1024 %> MiB</label>
+				</div>
+				<div style="width: 98%; margin: 2px auto;">
+					<label style="font-weight: bold;">Roles: </label>
+					<% node["roles"].each do |role| %>
+					<div style="width: 96%; margin: 2px auto 0px 30px;">
+						<label><%= role %></label>
+					</div>
+					<% end %>
+				</div>
+				<div style="width: 98%; margin: 2px auto;">
+					<label style="font-weight: bold;">Receitas: </label>
+					<% node["recipes"].each do |recipe| %>
+					<div style="width: 96%; margin: 2px auto 0px 30px;">
+						<label><%= recipe %></label>
+					</div>
+					<% end %>
+				</div>
 			</div>
-			<div style="clear: both;"></div>			
+			<div style="clear: both; height: 5px;"></div>			
 		</div>
 	</div>
 	<div style="border: 2px solid lightgrey; height: 500px; margin-top: 10px; min-width: 960px; width: 100%;">
