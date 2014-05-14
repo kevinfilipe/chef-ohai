@@ -3,6 +3,7 @@ JSON_MONITOR_MEMORIA=$DIRETORIO_DESTINO_ARQUIVOS_JSON/monitor-memoria.json;
 TMP_MONITOR_MEMORIA=$DIRETORIO_DESTINO_ARQUIVOS_JSON/monitor-memoria.tmp;
 JSON_MONITOR_SWAP=$DIRETORIO_DESTINO_ARQUIVOS_JSON/monitor-swap.json;
 TMP_MONITOR_SWAP=$DIRETORIO_DESTINO_ARQUIVOS_JSON/monitor-swap.tmp;
+JSON_MONITOR_HD=$DIRETORIO_DESTINO_ARQUIVOS_JSON/monitor-hd.json;
 
 MEMORIA_TOTAL_STRING=`ohai memory/total | grep [[:digit:]]`;
 MEMORIA_TOTAL_INTEIRO=`echo $MEMORIA_TOTAL_STRING | sed 's/["a-zA-Z]//g'`;
@@ -19,6 +20,11 @@ SWAP_LIVRE_INTEIRO=`echo $SWAP_LIVRE_STRING | sed 's/["a-zA-Z]//g'`;
 SWAP_LIVRE_INTEIRO_MB=$(($SWAP_LIVRE_INTEIRO / 1024));
 SWAP_EM_USO_INTEIRO_MB=$((($SWAP_TOTAL_INTEIRO - $SWAP_LIVRE_INTEIRO) / 1024));
 QUANTIDADE_MAXIMA_LEITURAS_SWAP=6;
+
+HD_LIVRE_INTEIRO=`ohai filesystem | sed 's/"\/dev\/sda/"devsda/g' | jq '.devsda2 .kb_available' | sed 's/["a-zA-Z]//g'`;
+HD_LIVRE_INTEIRO_GB=`echo "scale=1; $HD_LIVRE_INTEIRO / 1024 / 1024" | bc -l`;
+HD_USO_INTEIRO=`ohai filesystem | sed 's/"\/dev\/sda/"devsda/g' | jq '.devsda2 .kb_used' | sed 's/["a-zA-Z]//g'`;
+HD_USO_INTEIRO_GB=`echo "scale=1; $HD_USO_INTEIRO / 1024 / 1024" | bc -l`;
 
 HORA_MINUTO_LEITURA=`date +%H:%M`;
 
@@ -98,4 +104,27 @@ else
 
 		mv $TMP_MONITOR_SWAP $JSON_MONITOR_SWAP;
 	fi
+fi
+
+if [ ! -f $JSON_MONITOR_HD ]; then
+	echo "{" 																												>  $JSON_MONITOR_HD;
+	echo "    \"cols\": [" 																									>> $JSON_MONITOR_HD;
+	echo "            {\"id\": \"nome\", \"type\": \"string\"}," 															>> $JSON_MONITOR_HD;
+	echo "            {\"id\": \"valor\", \"type\": \"number\"}" 															>> $JSON_MONITOR_HD;
+	echo "    ]," 																											>> $JSON_MONITOR_HD;
+	echo "    \"rows\": [" 																									>> $JSON_MONITOR_HD;
+	echo "            {\"c\":[{\"v\": \"HD Livre\"}, {\"v\": $HD_LIVRE_INTEIRO_GB, \"f\": \"$HD_LIVRE_INTEIRO_GB GiB\"}]}," >> $JSON_MONITOR_HD;
+	echo "            {\"c\":[{\"v\": \"HD em Uso\"}, {\"v\": $HD_USO_INTEIRO_GB, \"f\": \"$HD_USO_INTEIRO_GB GiB\"}]}" 	>> $JSON_MONITOR_HD;
+	echo "    ]" 																											>> $JSON_MONITOR_HD;
+	echo "}" 																												>> $JSON_MONITOR_HD;
+else
+	QUANTIDADE_BYTES_TRUNCAR=`tail -n 4 $JSON_MONITOR_HD | wc -c`;
+	QUANTIDADE_BYTES_TRUNCAR_ARQUIVO=$QUANTIDADE_BYTES_TRUNCAR;
+
+	truncate -s -$QUANTIDADE_BYTES_TRUNCAR_ARQUIVO $JSON_MONITOR_HD;
+
+	echo "            {\"c\":[{\"v\": \"HD Livre\"}, {\"v\": $HD_LIVRE_INTEIRO_GB, \"f\": \"$HD_LIVRE_INTEIRO_GB GiB\"}]}," >> $JSON_MONITOR_HD;
+	echo "            {\"c\":[{\"v\": \"HD em Uso\"}, {\"v\": $HD_USO_INTEIRO_GB, \"f\": \"$HD_USO_INTEIRO_GB GiB\"}]}" 	>> $JSON_MONITOR_HD;
+	echo "    ]" 																											>> $JSON_MONITOR_HD;
+	echo "}" 																												>> $JSON_MONITOR_HD;
 fi
