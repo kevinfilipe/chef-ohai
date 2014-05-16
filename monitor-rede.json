@@ -1,0 +1,10 @@
+{
+    "cols": [
+            {"id": "tempo", "label": "Tempo", "type": "string"},
+            {"id": "trafegoEntrada", "label": "Tráfego de Entrada", "type": "number"},
+            {"id": "trafegoSaida", "label": "Tráfego de Saída", "type": "number"}
+    ],
+    "rows": [
+            {"c":[{"v": "14:00"}, {"v": 3000, "f": "3000 B"}, {"v": 1200, "f": "1200 B"}]}
+    ]
+}
