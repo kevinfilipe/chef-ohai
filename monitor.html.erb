@@ -12,11 +12,12 @@
 			carregarDadosMemoria();
 			carregarDadosSwap();
 			carregarDadosHD();
+			carregarDadosRede();
 		};
 
 		function carregarDadosMemoria() {
 		    $.ajax({
-		    	complete: setTimeout(carregarDadosMemoria, 20000),
+		    	complete: setTimeout(carregarDadosMemoria, 25000),
 		    	dataType: 'json',
 		    	timeout: 10000,
 		        type: 'POST',
@@ -31,7 +32,7 @@
 
 		function carregarDadosSwap() {
 		    $.ajax({
-		    	complete: setTimeout(carregarDadosSwap, 20000),
+		    	complete: setTimeout(carregarDadosSwap, 25000),
 		    	dataType: 'json',
 		    	timeout: 10000,
 		        type: 'POST',
@@ -46,7 +47,7 @@
 
 		function carregarDadosHD() {
 		    $.ajax({
-		    	complete: setTimeout(carregarDadosHD, 20000),
+		    	complete: setTimeout(carregarDadosHD, 35000),
 		    	dataType: 'json',
 		    	timeout: 10000,
 		        type: 'POST',
@@ -54,6 +55,21 @@
 		    })
 		    .done(function(data) {
 		    	desenharGraficoHD(data);
+		    })
+		    .fail(function(data) {
+		    });	
+		};
+
+		function carregarDadosRede() {
+		    $.ajax({
+		    	complete: setTimeout(carregarDadosRede, 25000),
+		    	dataType: 'json',
+		    	timeout: 10000,
+		        type: 'POST',
+		        url: 'monitor-rede.json'
+		    })
+		    .done(function(data) {
+		    	desenharGraficoRede(data);
 		    })
 		    .fail(function(data) {
 		    });	
@@ -122,6 +138,31 @@
 			};
 
 			var chart = new google.visualization.PieChart(document.getElementById('monitor-hd'));
+			chart.draw(dataTable, options);
+		};
+
+		function desenharGraficoRede(data) {
+			var dataTable = new google.visualization.DataTable(data);
+
+			var options = {
+			  	legend: {
+			  		position: 'bottom'
+			  	},
+			  	hAxis: {
+			  		titleTextStyle: {
+			  			color: '#333'
+			  		}
+			 	},
+			 	vAxis: {
+			 		format: '# B',
+			 		minValue: 0,
+			 		titleTextStyle: {
+			 			color: '#333'
+			 		}
+			 	}
+			};
+
+			var chart = new google.visualization.AreaChart(document.getElementById('monitor-rede'));
 			chart.draw(dataTable, options);
 		};
 	</script>
@@ -246,6 +287,14 @@
 			</div>
 		</div>
 		<div style="clear: both;"></div>
+	</div>
+	<div style="border: 2px solid lightgrey; height: 500px; margin-top: 10px; min-width: 960px; width: 100%;">
+		<div style="background-color: lightgrey; border-bottom: 2px solid lightgrey; height: 30px; text-align: center; width: 100%;">
+			<label style="line-height: 30px; font-family: sans-serif; font-size: 20px; font-weight: bold;">Tráfego de Rede</label>
+		</div>
+		<div style="height: 470px; width: 100%;">
+			<div id="monitor-rede" style="width: 100%; height: 98%;"></div>
+		</div>
 	</div>
 </body>
 </html>
