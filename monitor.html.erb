@@ -82,18 +82,10 @@
 			  	legend: {
 			  		position: 'bottom'
 			  	},
-			  	hAxis: {
-			  		titleTextStyle: {
-			  			color: '#333'
-			  		}
-			 	},
-			 	vAxis: {
+			  	vAxis: {
 			 		format: '# MiB',
 			 		minValue: 0,
-			 		maxValue: <%= node["memory"]["total"].to_i / 1024 %>,
-			 		titleTextStyle: {
-			 			color: '#333'
-			 		}
+			 		maxValue: <%= node["memory"]["total"].to_i / 1024 %>
 			 	}
 			};
 
@@ -108,18 +100,10 @@
 			  	legend: {
 			  		position: 'bottom'
 			  	},
-			  	hAxis: {
-			  		titleTextStyle: {
-			  			color: '#333'
-			  		}
-			 	},
 			 	vAxis: {
 			 		format: '# MiB',
 			 		minValue: 0,
-			 		maxValue: <%= node["memory"]["swap"]["total"].to_i / 1024 %>,
-			 		titleTextStyle: {
-			 			color: '#333'
-			 		}
+			 		maxValue: <%= node["memory"]["swap"]["total"].to_i / 1024 %>
 			 	}
 			};
 
@@ -148,17 +132,9 @@
 			  	legend: {
 			  		position: 'bottom'
 			  	},
-			  	hAxis: {
-			  		titleTextStyle: {
-			  			color: '#333'
-			  		}
-			 	},
 			 	vAxis: {
-			 		format: '# B',
-			 		minValue: 0,
-			 		titleTextStyle: {
-			 			color: '#333'
-			 		}
+			 		format: '# KiB',
+			 		minValue: 0
 			 	}
 			};
 

@@ -6,7 +6,7 @@ TMP_MONITOR_SWAP=$DIRETORIO_DESTINO_ARQUIVOS_JSON/monitor-swap.tmp;
 JSON_MONITOR_HD=$DIRETORIO_DESTINO_ARQUIVOS_JSON/monitor-hd.json;
 JSON_MONITOR_REDE=$DIRETORIO_DESTINO_ARQUIVOS_JSON/monitor-rede.json;
 TMP_MONITOR_REDE=$DIRETORIO_DESTINO_ARQUIVOS_JSON/monitor-rede.tmp;
-TMP_MONITOR_REDE_LEITURA_ANTERIOR=$DIRETORIO_DESTINO_ARQUIVOS_JSON/monitor-rede_la.tmp;
+TMP_MONITOR_REDE_LEITURA_ANTERIOR=$DIRETORIO_DESTINO_ARQUIVOS_JSON/monitor-rede_ultima-leitura.tmp;
 
 MEMORIA_TOTAL_INTEIRO=`ohai memory/total | grep [[:digit:]] | sed 's/["a-zA-Z ]//g'`;
 MEMORIA_LIVRE_INTEIRO=`ohai memory/free | grep [[:digit:]] | sed 's/["a-zA-Z ]//g'`;
@@ -137,16 +137,16 @@ else
 fi
 
 if [ ! -f $JSON_MONITOR_REDE ]; then
-	echo "{" 																															>  $JSON_MONITOR_REDE;
-	echo "    \"cols\": [" 																												>> $JSON_MONITOR_REDE;
-	echo "            {\"id\": \"tempo\", \"label\": \"Tempo\", \"type\": \"string\"}," 												>> $JSON_MONITOR_REDE;
-	echo "            {\"id\": \"trafegoEntrada\", \"label\": \"Tráfego de Entrada\", \"type\": \"number\"}," 							>> $JSON_MONITOR_REDE;
-	echo "            {\"id\": \"trafegoSaida\", \"label\": \"Tráfego de Saída\", \"type\": \"number\"}" 								>> $JSON_MONITOR_REDE;
-	echo "    ]," 																														>> $JSON_MONITOR_REDE;
-	echo "    \"rows\": [" 																												>> $JSON_MONITOR_REDE;
-	echo "            {\"c\":[{\"v\": \"$HORA_LEITURA:$MINUTO_LEITURA\"}, {\"v\": 0, \"f\": \"0 B\"}, {\"v\": 0, \"f\": \"0 B\"}]}" 	>> $JSON_MONITOR_REDE;
-	echo "    ]" 																														>> $JSON_MONITOR_REDE;
-	echo "}" 																															>> $JSON_MONITOR_REDE;
+	echo "{" 																																>  $JSON_MONITOR_REDE;
+	echo "    \"cols\": [" 																													>> $JSON_MONITOR_REDE;
+	echo "            {\"id\": \"tempo\", \"label\": \"Tempo\", \"type\": \"string\"}," 													>> $JSON_MONITOR_REDE;
+	echo "            {\"id\": \"trafegoEntrada\", \"label\": \"Tráfego de Entrada\", \"type\": \"number\"}," 								>> $JSON_MONITOR_REDE;
+	echo "            {\"id\": \"trafegoSaida\", \"label\": \"Tráfego de Saída\", \"type\": \"number\"}" 									>> $JSON_MONITOR_REDE;
+	echo "    ]," 																															>> $JSON_MONITOR_REDE;
+	echo "    \"rows\": [" 																													>> $JSON_MONITOR_REDE;
+	echo "            {\"c\":[{\"v\": \"$HORA_LEITURA:$MINUTO_LEITURA\"}, {\"v\": 0, \"f\": \"0 KiB\"}, {\"v\": 0, \"f\": \"0 KiB\"}]}" 	>> $JSON_MONITOR_REDE;
+	echo "    ]" 																															>> $JSON_MONITOR_REDE;
+	echo "}" 																																>> $JSON_MONITOR_REDE;
 
 	echo "$HORA_LEITURA$MINUTO_LEITURA"	>	$TMP_MONITOR_REDE_LEITURA_ANTERIOR; 
 	echo "$REDE_ENTRADA_INTEIRO_BYTES"	>> 	$TMP_MONITOR_REDE_LEITURA_ANTERIOR; 
@@ -157,8 +157,8 @@ else
 	REDE_SIB_LEITURA_ANTERIOR=`sed -n 3p $TMP_MONITOR_REDE_LEITURA_ANTERIOR`;
 
 	if [ "$(($HORA_LEITURA$MINUTO_LEITURA - $HORA_MINUTO_LEITURA_ANTERIOR))" -eq "1" ]; then
-		REDE_ENTRADA_INTEIRO_BYTES_DIF=$(($REDE_ENTRADA_INTEIRO_BYTES - $REDE_EIB_LEITURA_ANTERIOR));
-		REDE_SAIDA_INTEIRO_BYTES_DIF=$(($REDE_SAIDA_INTEIRO_BYTES - $REDE_SIB_LEITURA_ANTERIOR));
+		REDE_ENTRADA_INTEIRO_BYTES_DIF=$((($REDE_ENTRADA_INTEIRO_BYTES - $REDE_EIB_LEITURA_ANTERIOR) / 1024));
+		REDE_SAIDA_INTEIRO_BYTES_DIF=$((($REDE_SAIDA_INTEIRO_BYTES - $REDE_SIB_LEITURA_ANTERIOR) / 1024));
 
 		echo "$HORA_LEITURA$MINUTO_LEITURA"	>	$TMP_MONITOR_REDE_LEITURA_ANTERIOR; 
 		echo "$REDE_ENTRADA_INTEIRO_BYTES"	>> 	$TMP_MONITOR_REDE_LEITURA_ANTERIOR; 
@@ -177,10 +177,10 @@ else
 
 	truncate -s -$QUANTIDADE_BYTES_TRUNCAR_ARQUIVO $JSON_MONITOR_REDE;
 
-	echo "," 																																																												>> $JSON_MONITOR_REDE;
-	echo "            {\"c\":[{\"v\": \"$HORA_LEITURA:$MINUTO_LEITURA\"}, {\"v\": $REDE_ENTRADA_INTEIRO_BYTES_DIF, \"f\": \"$REDE_ENTRADA_INTEIRO_BYTES_DIF B\"}, {\"v\": $REDE_SAIDA_INTEIRO_BYTES_DIF, \"f\": \"$REDE_SAIDA_INTEIRO_BYTES_DIF B\"}]}" 	>> $JSON_MONITOR_REDE;
-	echo "    ]" 																																																											>> $JSON_MONITOR_REDE;
-	echo "}" 																																																												>> $JSON_MONITOR_REDE;
+	echo "," 																																																													>> $JSON_MONITOR_REDE;
+	echo "            {\"c\":[{\"v\": \"$HORA_LEITURA:$MINUTO_LEITURA\"}, {\"v\": $REDE_ENTRADA_INTEIRO_BYTES_DIF, \"f\": \"$REDE_ENTRADA_INTEIRO_BYTES_DIF KiB\"}, {\"v\": $REDE_SAIDA_INTEIRO_BYTES_DIF, \"f\": \"$REDE_SAIDA_INTEIRO_BYTES_DIF KiB\"}]}" 	>> $JSON_MONITOR_REDE;
+	echo "    ]" 																																																												>> $JSON_MONITOR_REDE;
+	echo "}" 																																																													>> $JSON_MONITOR_REDE;
 
 	QUANTIDADE_LEITURAS=`cat $JSON_MONITOR_REDE | grep '}]}' | wc -l`;
 
